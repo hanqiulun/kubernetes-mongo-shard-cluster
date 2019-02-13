@@ -5,9 +5,12 @@ metadata:
   labels:
     run: mongos1
 spec:
+  type: NodePort
   ports:
-  - port: 27017
-    protocol: TCP
+    - port: 27017
+      name: helper-port
+      nodePort: 27000
+      protocol: TCP
   selector:
     run: mongos1
 ---
@@ -35,7 +38,7 @@ spec:
             - name: mongos1
               mountPath: /data/db
         command: ["mongos"]
-        args: ["--configdb", "cfgrs/mongocfg1:27019,mongocfg2:27019,mongocfg3:27019"]
+        args: ["--configdb", "cfgrs/mongocfg1:27019,mongocfg2:27019,mongocfg3:27019", "--bind_ip_all"]
       volumes:
         - name: mongos1
 #          persistentVolumeClaim:
@@ -48,9 +51,12 @@ metadata:
   labels:
     run: mongos2
 spec:
+  type: NodePort
   ports:
-  - port: 27017
-    protocol: TCP
+    - port: 27017
+      name: helper-port
+      nodePort: 27001
+      protocol: TCP
   selector:
     run: mongos2
 ---
@@ -78,7 +84,7 @@ spec:
             - name: mongos2
               mountPath: /data/db
         command: ["mongos"]
-        args: ["--configdb", "cfgrs/mongocfg1:27019,mongocfg2:27019,mongocfg3:27019"]
+        args: ["--configdb", "cfgrs/mongocfg1:27019,mongocfg2:27019,mongocfg3:27019", "--bind_ip_all"]
       volumes:
         - name: mongos2
 #          persistentVolumeClaim:
